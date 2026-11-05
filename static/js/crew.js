@@ -21,7 +21,7 @@ async function loadCrewTasks() {
     }
 
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/crew-tasks?crew_id=${userId}`);
+        const response = await fetch(`/api/crew-tasks?crew_id=${userId}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -83,7 +83,7 @@ function renderCrewTasks(tasks) {
             <td>${task.description}</td>
             <td>
                 ${task.image_path 
-                    ? `<a href="http://127.0.0.1:5000/uploads/${task.image_path}" target="_blank" class="photo-link">View Photo</a>` 
+                    ? `<a href="/uploads/${task.image_path}" target="_blank" class="photo-link">View Photo</a>` 
                     : 'No Photo'}
             </td>
             <td>${formattedDate}</td>
@@ -117,7 +117,7 @@ async function markResolved(reportId, btn) {
     }
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/api/resolve-task', {
+        const response = await fetch('/api/resolve-task', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ report_id: reportId })
@@ -153,7 +153,7 @@ async function loadCrewAvailabilityStatus() {
     if (!userId) return;
 
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/crew/status?crew_id=${userId}`);
+        const response = await fetch(`/api/crew/status?crew_id=${userId}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -180,7 +180,7 @@ async function toggleMyAvailability() {
     btn.disabled = true;
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/api/crew/toggle-availability', {
+        const response = await fetch('/api/crew/toggle-availability', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ crew_id: userId, is_available: newStatus })

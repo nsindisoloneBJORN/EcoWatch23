@@ -77,7 +77,7 @@ async function loadMyReports() {
     if (!userId) return;
 
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/resident-reports?user_id=${userId}`);
+        const response = await fetch(`/api/resident-reports?user_id=${userId}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -118,7 +118,7 @@ function renderResidentReports(reports) {
             <td>${report.description}</td>
             <td>
                 ${report.image_path 
-                    ? `<a href="http://127.0.0.1:5000/uploads/${report.image_path}" target="_blank" style="color: #2e7d32; font-weight: bold;">View Photo</a>` 
+                    ? `<a href="/uploads/${report.image_path}" target="_blank" style="color: #2e7d32; font-weight: bold;">View Photo</a>` 
                     : 'No Photo'}
             </td>
             <td><span class="status-badge ${report.status ? report.status.toLowerCase() : 'pending'}">${report.status || 'Pending'}</span></td>
@@ -174,7 +174,7 @@ async function submitReport(event) {
     formData.append("longitude", longitude);
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/api/submit-report', {
+        const response = await fetch('/api/submit-report', {
             method: 'POST',
             body: formData
         });
