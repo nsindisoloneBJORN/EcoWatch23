@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoWatch - Cleanup Crew Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="portal-header">
+        <h2 id="welcome-user">EcoWatch Cleanup Crew Portal</h2>
+        <div class="header-actions">
+            <button class="btn-logout" onclick="handleLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="portal-container">
+        <!-- Analytics Cards -->
+        <div class="analytics-cards">
+            <div class="card">
+                <h3>My Assigned Tasks</h3>
+                <p id="assigned-count">0</p>
+            </div>
+            <div class="card">
+                <h3>Completed Tasks</h3>
+                <p id="completed-count">0</p>
+            </div>
+        </div>
+
+        <!-- Task Table Section -->
+        <div class="table-section">
+            <h3>Assigned Cleanup Tasks</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Issue Type</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Photo</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Navigation / GPS</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crew-task-table">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">Loading assigned tasks...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/crew.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof checkSession === "function") {
+                checkSession();
+            }
+            if (typeof loadCrewTasks === "function") {
+                loadCrewTasks();
+            }
+            
+        });
+    </script>
+</body>
+</html>

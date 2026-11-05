@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoWatch - Resident Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- LEAFLET MAP CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- LEAFLET MAP JAVASCRIPT -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body onload="if(typeof checkSession === 'function') checkSession();">
+    <header class="portal-header">
+        <h2>EcoWatch Resident Portal</h2>
+        <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </header>
+
+    <div class="portal-container">
+        <!-- Submit Report Form Section -->
+        <div class="form-section" style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h3>Report a Waste Incident</h3>
+            <form id="incident-form" onsubmit="submitReport(event)">
+                
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="issue-type">Issue Type:</label>
+                    <select id="issue-type" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                        <option value="">-- Select Issue Type --</option>
+                        <option value="Illegal Dumping">Illegal Dumping</option>
+                        <option value="Full Skip / Container">Full Skip / Container</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="location">Location / Area Name:</label>
+                    <select id="location" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                        <option value="">-- Select Area --</option>
+                        <option value="Mall">Mall</option>
+                        <option value="Surgery">Surgery</option>
+                        <option value="Mgwazeni">Mgwazeni</option>
+                        <option value="UniZulu Main Campus">UniZulu Main Campus</option>
+                        <option value="Mhlathuze">Mhlathuze</option>
+                    </select>
+                </div>
+
+                <!-- INTERACTIVE MAP SELECTION FOR RESIDENT -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-weight: bold; color: #2e7d32;">📍 Point Location on Dlangezwa Map (Click on the map):</label>
+                    <p style="font-size: 13px; color: #666; margin: 3px 0 8px 0;">Point the location of your skips or illegal dumping.</p>
+                    
+                    <!-- Map Box -->
+                    <div id="resident-map" style="height: 320px; width: 100%; border-radius: 8px; border: 2px solid #2e7d32; margin-bottom: 8px;"></div>
+                    
+                    <!-- Hidden inputs to store coordinates selected from map -->
+                    <input type="hidden" id="latitude" name="latitude" required>
+                    <input type="hidden" id="longitude" name="longitude" required>
+                    <div id="selected-coords-text" style="font-size: 12px; color: #333; font-weight: bold; background: #e8f5e9; padding: 6px; border-radius: 4px; display: none;"></div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="description">Description:</label>
+                    <textarea id="description" rows="3" placeholder="Describe the issue in detail..." required style="width: 100%; padding: 8px; margin-top: 5px;"></textarea>
+                </div>
+
+                <!-- Mandatory Image Upload -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="image">Upload Incident Photo (Required):</label>
+                    <input type="file" id="image" accept="image/*" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                </div>
+
+                <button type="submit" class="btn-primary" style="padding: 10px 20px; font-weight: bold; background: #2e7d32; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit Report</button>
+            </form>
+            <div id="form-msg" style="margin-top: 10px; font-weight: bold;"></div>
+        </div>
+
+        <!-- Resident Reports Tracking Table -->
+        <div class="table-section">
+            <h3>My Submitted Reports & Status</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Date Reported</th>
+                        <th>Issue Type</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Photo</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resident-reports-table">
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Loading your reports...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/resident.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoWatch - Waste Management Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- 1. COVER PAGE -->
+    <div id="cover-page" class="cover-container">
+        <div class="cover-content">
+            <h1>EcoWatch</h1>
+            <p class="subtitle">KwaDlangezwa Waste Management Platform</p>
+            <p class="description">
+                Connecting residents and local authorities to build a cleaner, healthier community.
+            </p>
+            <button class="btn-get-started" onclick="showLoginPage()">Get Started</button>
+        </div>
+    </div>
+
+    <!-- 2. LOGIN CARD -->
+    <div id="login-page" class="login-card hidden" style="padding-bottom: 25px;">
+        <div class="login-header">
+            <h2>EcoWatch</h2>
+            <p>Sign in to your account</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label for="identifier">Email</label>
+                <input type="email" id="identifier" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password', 'eye-icon')" aria-label="Toggle password visibility">
+                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </button>
+                </div>
+                <small id="error-msg" class="error-text"></small>
+            </div>
+
+            <div class="input-group">
+                <label for="role">User Role</label>
+                <select id="role" required>
+                    <option value="" disabled selected>-- Select your role --</option>
+                    <option value="resident">Resident</option>
+                    <option value="crew">Municipal Clean-up Crew</option>
+                    <option value="admin">Municipal Administrator</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-login">Log In</button>
+        </form>
+
+        <!-- Dynamic Action Buttons -->
+        <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+            <button type="button" onclick="openInfoModal(event)" style="flex: 1; padding: 8px; background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem;">
+                ℹ️ About Platform
+            </button>
+            <button type="button" onclick="openHelpModal(event)" style="flex: 1; padding: 8px; background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem;">
+                📞 Help / Support
+            </button>
+        </div>
+
+        <div class="login-footer" style="margin-top: 15px; text-align: center;">
+            <p>Don't have an account? <a href="#" onclick="showRegisterPage()" style="color: #2e7d32; font-weight: bold;">Register here</a></p>
+            <p style="margin-top: 8px;"><a href="#" onclick="showCoverPage()" style="color: #666; text-decoration: none; font-size: 0.85rem;">← Back to Home Page</a></p>
+        </div>
+    </div>
+
+    <!-- 3. REGISTRATION CARD -->
+    <div id="register-page" class="login-card hidden">
+        <div class="login-header">
+            <h2>Create Account</h2>
+            <p>Join the EcoWatch KwaDlangezwa Community</p>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="input-group">
+                <label for="reg-fullname">Full Name</label>
+                <input type="text" id="reg-fullname" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="input-group">
+                <label for="reg-identifier">Email Address</label>
+                <input type="email" id="reg-identifier" placeholder="Enter valid email address" required>
+                <small id="reg-error-msg" class="error-text"></small>
+            </div>
+
+            <div class="input-group">
+                <label for="reg-password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="reg-password" placeholder="Create a password" required>
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility('reg-password', 'reg-eye-icon')" aria-label="Toggle password visibility">
+                        <svg id="reg-eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="reg-confirm-password">Confirm Password</label>
+                <input type="password" id="reg-confirm-password" placeholder="Confirm your password" required>
+                <small id="match-error-msg" class="error-text"></small>
+            </div>
+
+            <button type="submit" class="btn-login">Register</button>
+        </form>
+
+        <div class="login-footer">
+            <p>Already have an account? <a href="#" onclick="showLoginPage()">Log In here</a></p>
+            <p><a href="#" onclick="showCoverPage()">← Back to Home</a></p>
+        </div>
+    </div>
+
+    <!-- 3.1. OTP VERIFICATION CARD -->
+    <div id="otp-page" class="login-card hidden">
+        <div class="login-header">
+            <h2>Verify Account</h2>
+            <p>Enter the 6-digit OTP code sent to your email</p>
+        </div>
+
+        <form id="otpForm" onsubmit="handleVerifyOtp(event)">
+            <div class="input-group">
+                <label for="otp-input">Enter OTP Code</label>
+                <input type="text" id="otp-input" placeholder="e.g. 123456" maxlength="6" required style="text-align: center; font-size: 1.2rem; letter-spacing: 3px;">
+                <small id="otp-error-msg" class="error-text"></small>
+            </div>
+
+            <button type="submit" class="btn-login">Verify OTP</button>
+        </form>
+
+        <div class="login-footer" style="margin-top: 15px; text-align: center;">
+            <p><a href="#" onclick="showLoginPage()" style="color: #2e7d32; font-weight: bold;">Back to Login</a></p>
+        </div>
+    </div>
+
+    <!-- 4. MORE INFORMATION POPUP MODAL -->
+    <div id="info-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000;">
+        <div style="background: white; padding: 25px; border-radius: 10px; max-width: 450px; width: 90%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <h3 style="color: #2e7d32; margin-bottom: 12px;">About EcoWatch Platform</h3>
+            <p style="font-size: 0.95rem; color: #444; line-height: 1.5; margin-bottom: 15px; text-align: left;">
+                EcoWatch is a municipal waste management system designed specifically for the KwaDlangezwa community. 
+                <br><br>
+                • <strong>Residents:</strong> Report illegal dumping & waste issues with photo proof.<br>
+                • <strong>Administrators:</strong> Manage reports and dispatch cleanup crews.<br>
+                • <strong>Cleanup Crew:</strong> Track assigned tasks and mark them resolved.
+            </p>
+            <button onclick="closeInfoModal()" style="background: #2e7d32; color: white; border: none; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">Close</button>
+        </div>
+    </div>
+
+    <!-- 5. HELP & SUPPORT POPUP MODAL -->
+    <div id="help-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000;">
+        <div style="background: white; padding: 25px; border-radius: 10px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <h3 style="color: #2e7d32; margin-bottom: 12px;">EcoWatch IT Support</h3>
+            <p style="font-size: 0.95rem; color: #444; line-height: 1.5; margin-bottom: 15px;">
+                Forgot your password or experiencing system issues? Please contact the Administrator for assistance:
+            </p>
+            <div style="background: #e8f5e9; padding: 12px; border-radius: 6px; margin-bottom: 18px; font-weight: bold; color: #2e7d32; text-align: center;">
+                 Email: sandilewandi12@gmail.com   &    
+
+                 call/whatsApp: 0725839198
+            </div>
+            <button onclick="closeHelpModal()" style="background: #2e7d32; color: white; border: none; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-weight: bold;">Close</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoWatch - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body onload="checkSession(); loadAdminDashboard();">
+    <header class="portal-header">
+        <h2 id="welcome-user">Admin Dashboard</h2>
+        <button class="btn-logout" onclick="handleLogout()" style="background: #d32f2f; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;">Logout</button>
+    </header>
+
+    <div class="portal-container">
+        <!-- Analytics Cards -->
+        <div class="analytics-cards">
+            <div class="card">
+                <h3>Total Reports</h3>
+                <p id="total-reports">0</p>
+            </div>
+            <div class="card">
+                <h3>Pending Reports</h3>
+                <p id="pending-reports">0</p>
+            </div>
+            <div class="card">
+                <h3>Assigned Reports</h3>
+                <p id="assigned-reports">0</p>
+            </div>
+        </div>
+
+        <!-- Reports & Dispatch Management Table -->
+        <div class="table-section">
+            <h3>Manage Resident Reports & Dispatch Crew</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Issue Type</th>
+                            <th>Location</th>
+                            <th>GPS</th>
+                            <th>Description</th>
+                            <th>Photo</th>
+                            <th>Reported By</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Action / Dispatch</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reports-table-body">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">Loading dashboard data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
