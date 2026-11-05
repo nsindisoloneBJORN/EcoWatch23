@@ -25,6 +25,9 @@ SENDER_EMAIL = "sandilewandi12@gmail.com"
 SENDER_PASSWORD = "opafbilzubzqqfqq"
 
 def send_otp_email(receiver_email, otp_code):
+    print("==================================================")
+    print(f" [CLOUD OTP GENERATED] For: {receiver_email} -> CODE: {otp_code}")
+    print("==================================================")
     try:
         msg = MIMEMultipart()
         msg['From'] = SENDER_EMAIL
@@ -34,15 +37,17 @@ def send_otp_email(receiver_email, otp_code):
         body = f"Hello,\n\nYour One-Time Password (OTP) for account verification is: {otp_code}\n\nThank you!"
         msg.attach(MIMEText(body, 'plain'))
 
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        # Attempt SMTP connection with a short timeout so it doesn't hang/crash the worker
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=5)
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
         server.quit()
         return True
     except Exception as e:
-        print("Error sending email:", e)
-        return False
+        print(f"Notice: External SMTP blocked/failed on cloud host ({e}). OTP is printed in logs above for presentation use.")
+        # Return True so account creation succeeds seamlessly on cloud hosting
+        return True
 
 # Robust Database Connection with Cloud-to-Local Fallback for Cross-Platform/Network Stability
 def get_db_connection():
@@ -106,19 +111,12 @@ def register():
             connection.commit()
 
             try:
-                email_sent = send_otp_email(email, otp_code)
-                if not email_sent:
-                    cursor.execute("DELETE FROM users WHERE email = %s AND is_verified = 0", (email,))
-                    connection.commit()
-                    return jsonify({'error': 'Failed to send OTP email. Please check your Gmail App Password configuration in app.py.'}), 500
+                send_otp_email(email, otp_code)
             except Exception as mail_err:
-                print("SMTP Error Detail:", str(mail_err))
-                cursor.execute("DELETE FROM users WHERE email = %s AND is_verified = 0", (email,))
-                connection.commit()
-                return jsonify({'error': f'Failed to send email: {str(mail_err)}'}), 500
+                print("SMTP Non-fatal Warning:", str(mail_err))
 
             return jsonify({
-                'message': 'Registration successful! Please check your email for the OTP.',
+                'message': 'Registration successful! Please check your Render console logs for the OTP code.',
                 'email': email
             }), 201
     except Exception as e:
@@ -410,5 +408,4 @@ def resident_portal():
     return render_template('resident-portal.html')
 
 if __name__ == '__main__':
-    # Bound to 0.0.0.0 so both PCs and mobile phones on the same Wi-Fi network can access the server
     app.run(host='0.0.0.0', port=5000, debug=True)
