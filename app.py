@@ -21,7 +21,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Brevo REST API Configuration for Cloud Hosting
 BREVO_API_URL = "https://api.brevo.com/v3/smtp/email"
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
-SENDER_EMAIL = "sandilewandi12@gmail.com"
+SENDER_EMAIL = "nsindisothabede09@gmail.com"
 
 def send_otp_email(receiver_email, otp_code):
     payload = {
