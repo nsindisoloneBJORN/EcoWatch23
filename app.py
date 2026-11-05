@@ -1,6 +1,6 @@
 import os
 import random
-import smtplib
+import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify, send_from_directory, render_template, redirect, url_for
@@ -18,36 +18,36 @@ UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Gmail SMTP Configuration
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+# Brevo REST API Configuration for Cloud Hosting
+BREVO_API_URL = "https://api.brevo.com/v3/smtp/email"
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 SENDER_EMAIL = "sandilewandi12@gmail.com"
-SENDER_PASSWORD = "opafbilzubzqqfqq"
 
 def send_otp_email(receiver_email, otp_code):
-    print("==================================================")
-    print(f" [CLOUD OTP GENERATED] For: {receiver_email} -> CODE: {otp_code}")
-    print("==================================================")
+    payload = {
+        "sender": {"name": "EcoWatch Support", "email": SENDER_EMAIL},
+        "to": [{"email": receiver_email}],
+        "subject": "Your OTP Verification Code - EcoWatch",
+        "textContent": f"Hello,\n\nYour One-Time Password (OTP) for account verification is: {otp_code}\n\nThank you!"
+    }
+    
+    headers = {
+        "accept": "application/json",
+        "api-key": BREVO_API_KEY,
+        "content-type": "application/json"
+    }
+
     try:
-        msg = MIMEMultipart()
-        msg['From'] = SENDER_EMAIL
-        msg['To'] = receiver_email
-        msg['Subject'] = "Your OTP Verification Code - EcoWatch"
-
-        body = f"Hello,\n\nYour One-Time Password (OTP) for account verification is: {otp_code}\n\nThank you!"
-        msg.attach(MIMEText(body, 'plain'))
-
-        # Attempt SMTP connection with a short timeout so it doesn't hang/crash the worker
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=5)
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
-        server.quit()
-        return True
+        response = requests.post(BREVO_API_URL, json=payload, headers=headers, timeout=10)
+        if response.status_code in [200, 201]:
+            print(f"Successfully sent email OTP to {receiver_email}")
+            return True
+        else:
+            print(f"Brevo API Error: {response.text}")
+            return False
     except Exception as e:
-        print(f"Notice: External SMTP blocked/failed on cloud host ({e}). OTP is printed in logs above for presentation use.")
-        # Return True so account creation succeeds seamlessly on cloud hosting
-        return True
+        print(f"Error connecting to email API: {e}")
+        return False
 
 # Robust Database Connection with Cloud-to-Local Fallback for Cross-Platform/Network Stability
 def get_db_connection():
@@ -113,10 +113,10 @@ def register():
             try:
                 send_otp_email(email, otp_code)
             except Exception as mail_err:
-                print("SMTP Non-fatal Warning:", str(mail_err))
+                print("Email API Non-fatal Warning:", str(mail_err))
 
             return jsonify({
-                'message': 'Registration successful! Please check your Render console logs for the OTP code.',
+                'message': 'Registration successful! Please check your email inbox for your OTP code.',
                 'email': email
             }), 201
     except Exception as e:
